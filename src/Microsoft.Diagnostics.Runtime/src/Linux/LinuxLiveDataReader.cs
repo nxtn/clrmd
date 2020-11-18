@@ -74,7 +74,9 @@ namespace Microsoft.Diagnostics.Runtime.Linux
                     continue;
                 }
 
-                ulong addr = (ulong)GetElfFile(mod.ImageBase)!.OffsetToRva((long)ofs);
+                MemoryVirtualAddressSpace memoryAddressSpace = new MemoryVirtualAddressSpace(this);
+                var elf = new ElfFile(new Reader(memoryAddressSpace), (long)mod.ImageBase);
+                ulong addr = (ulong)elf.OffsetToRva((long)ofs);
                 foreach (var entry in Bundle.EnumerateFiles(this, addr))
                 {
                     Console.WriteLine(entry.RelativePath);
