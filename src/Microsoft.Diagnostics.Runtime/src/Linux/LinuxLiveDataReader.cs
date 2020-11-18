@@ -66,10 +66,15 @@ namespace Microsoft.Diagnostics.Runtime.Linux
             };
 
             Console.WriteLine("++");
-            foreach (var entry in Bundle.EnumerateFiles(this, 1, int.MaxValue))
+            foreach (var mod in _memoryMapEntries)
             {
-                Console.WriteLine(entry.RelativePath);
+                Console.WriteLine(mod.FilePath);
+                foreach (var entry in Bundle.EnumerateFiles(this, mod.BeginAddress, (int)(mod.EndAddress - mod.BeginAddress)))
+                {
+                    Console.WriteLine(entry.RelativePath);
+                }
             }
+
             Console.WriteLine("--");
         }
 
