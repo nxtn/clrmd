@@ -66,7 +66,7 @@ namespace Microsoft.Diagnostics.Runtime.Linux
             };
 
             Console.WriteLine("++");
-            foreach (var entry in Bundle.EnumerateFiles(this, 0, int.MaxValue))
+            foreach (var entry in Bundle.EnumerateFiles(this, 1, int.MaxValue))
             {
                 Console.WriteLine(entry.RelativePath);
             }

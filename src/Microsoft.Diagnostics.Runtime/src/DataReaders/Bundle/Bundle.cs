@@ -50,7 +50,10 @@ namespace Microsoft.Diagnostics.Runtime
             };
 
             address = reader.SearchMemory(address, length, signature);
-            return address == 0 ? 0 : !reader.ReadPointer(address, out ulong header) ? 0 : header;
+            //return address == 0 ? 0 : !reader.ReadPointer(address - sizeof(ulong), out ulong header) ? 0 : header;
+            var r = address == 0 ? 0 : !reader.ReadPointer(address - sizeof(ulong), out ulong header) ? 0 : header;
+            Console.WriteLine(r);
+            return r;
         }
 
         internal static int? GetPathLength(IMemoryReader reader, ref ulong address, sbyte firstByte)
