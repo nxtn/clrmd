@@ -52,7 +52,11 @@ namespace Microsoft.Diagnostics.Runtime
             address = reader.SearchMemory(address, length, signature);
             //return address == 0 ? 0 : !reader.ReadPointer(address - sizeof(ulong), out ulong header) ? 0 : header;
             var r = address == 0 ? 0 : !reader.ReadPointer(address - sizeof(ulong), out ulong header) ? 0 : header;
-            Console.WriteLine(r);
+            if (address != 0)
+            {
+                Console.WriteLine(r);
+            }
+
             return r;
         }
 

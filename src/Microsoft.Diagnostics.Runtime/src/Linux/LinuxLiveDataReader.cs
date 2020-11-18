@@ -71,7 +71,7 @@ namespace Microsoft.Diagnostics.Runtime.Linux
                 Console.WriteLine(mod.FilePath);
                 foreach (var entry in Bundle.EnumerateFiles(this, mod.BeginAddress, (int)(mod.EndAddress - mod.BeginAddress)))
                 {
-                    Console.WriteLine(entry.RelativePath);
+                    //Console.WriteLine(entry.RelativePath);
                 }
             }
 
