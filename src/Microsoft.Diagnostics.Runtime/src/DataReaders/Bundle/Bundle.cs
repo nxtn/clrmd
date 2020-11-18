@@ -26,17 +26,16 @@ namespace Microsoft.Diagnostics.Runtime
             return result;
         }
 
-        internal static IEnumerable<BundleFileEntry> EnumerateFiles(IMemoryReader reader, ulong address, int length) =>
-            (address = FindHeader(reader, address, length)) == 0 ? Enumerable.Empty<BundleFileEntry>() :
-                (BundleHeader.Read(reader, ref address) switch
+        internal static IEnumerable<BundleFileEntry> EnumerateFiles(IMemoryReader reader, ulong address) =>
+            BundleHeader.Read(reader, ref address) switch
+            {
+                null => Enumerable.Empty<BundleFileEntry>(),
+                BundleHeader header => BundleManifest.Read(reader, ref address, header.EmbeddedFilesCount) switch
                 {
                     null => Enumerable.Empty<BundleFileEntry>(),
-                    BundleHeader header => BundleManifest.Read(reader, ref address, header.EmbeddedFilesCount) switch
-                    {
-                        null => Enumerable.Empty<BundleFileEntry>(),
-                        BundleManifest manifest => manifest.Files,
-                    },
-                });
+                    BundleManifest manifest => manifest.Files,
+                },
+            };
 
         internal static ulong FindHeader(IMemoryReader reader, ulong address, int length)
         {

@@ -113,6 +113,22 @@ namespace Microsoft.Diagnostics.Runtime.Linux
             Header = header;
         }
 
+        internal long OffsetToRva(long offset)
+        {
+            if (!_virtual)
+                return offset;
+
+            ImmutableArray<ElfProgramHeader> segments = _programHeaders;
+            for (int i = 0; i < segments.Length; i++)
+            {
+                ElfProgramHeader segment = segments[i];
+                if (segment.FileOffset <= offset && offset < segment.FileOffset + segment.FileSize)
+                    return segment.VirtualAddress + (offset - segment.FileOffset);
+            }
+
+            return -1;
+        }
+
         private void CreateVirtualAddressReader()
         {
             _virtualAddressReader ??= new Reader(new ElfVirtualAddressSpace(ProgramHeaders, _reader.DataSource));

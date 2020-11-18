@@ -66,12 +66,18 @@ namespace Microsoft.Diagnostics.Runtime.Linux
             };
 
             Console.WriteLine("++");
-            foreach (var mod in _memoryMapEntries)
+            foreach (var mod in EnumerateModules())
             {
-                //Console.WriteLine(mod.FilePath);
-                foreach (var entry in Bundle.EnumerateFiles(this, mod.BeginAddress, (int)(mod.EndAddress - mod.BeginAddress)))
+                ulong ofs = Bundle.FindHeader(this, mod.ImageBase, int.MaxValue);
+                if (ofs == 0)
                 {
-                    //Console.WriteLine(entry.RelativePath);
+                    continue;
+                }
+
+                ulong addr = (ulong)GetElfFile(mod.ImageBase)!.OffsetToRva((long)ofs);
+                foreach (var entry in Bundle.EnumerateFiles(this, addr))
+                {
+                    Console.WriteLine(entry.RelativePath);
                 }
             }
 
