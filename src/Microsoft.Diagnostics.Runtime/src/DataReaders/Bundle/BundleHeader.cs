@@ -11,16 +11,31 @@ namespace Microsoft.Diagnostics.Runtime
         internal readonly int EmbeddedFilesCount;
         internal readonly sbyte BundleIdLengthByte1;
 
-        internal unsafe static BundleHeader? Read(IMemoryReader reader, ref ulong address) =>
-            !reader.ReadAndAdvance(ref address, out BundleHeader header) ? null :
-                (Bundle.GetPathLength(reader, ref address, header.BundleIdLengthByte1) switch
-                {
-                    null => null,
-                    int bundleIdLength => Bundle.ReadString(reader, ref address, bundleIdLength) switch
-                    {
-                        null => null,
-                        string => header,
-                    }
-                });
+        internal static BundleHeader? Read(IMemoryReader reader, ref ulong address)
+        {
+            BundleHeader? r = !reader.ReadAndAdvance(ref address, out BundleHeader header) ? null :
+(Bundle.GetPathLength(reader, ref address, header.BundleIdLengthByte1) switch
+{
+null => null,
+int bundleIdLength => Bundle.ReadString(reader, ref address, bundleIdLength) switch
+{
+null => null,
+string => header,
+}
+});
+            if (r != null)
+            {
+                System.Console.WriteLine(r.Value.MajorVersion);
+                System.Console.WriteLine(r.Value.MinorVersion);
+                System.Console.WriteLine(r.Value.EmbeddedFilesCount);
+                System.Console.WriteLine(r.Value.BundleIdLengthByte1);
+            }
+            else
+            {
+                System.Console.WriteLine("???");
+            }
+
+            return r;
+        }
     }
 }
