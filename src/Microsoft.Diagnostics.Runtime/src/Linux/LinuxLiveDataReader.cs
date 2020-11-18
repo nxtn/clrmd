@@ -64,6 +64,13 @@ namespace Microsoft.Diagnostics.Runtime.Linux
                 ProcessArchitecture.Arm64 => Architecture.Arm64,
                 _ => Architecture.Unknown,
             };
+
+            Console.WriteLine("++");
+            foreach (var entry in Bundle.EnumerateFiles(this, 0, int.MaxValue))
+            {
+                Console.WriteLine(entry.RelativePath);
+            }
+            Console.WriteLine("--");
         }
 
         ~LinuxLiveDataReader() => Dispose(false);
